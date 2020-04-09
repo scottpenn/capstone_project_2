@@ -1,5 +1,6 @@
 data/raw/*
 data/clean/*
+files/private/*
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
