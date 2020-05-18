@@ -104,9 +104,9 @@ def directional_indicator(stock, timeperiods, high, low, close):
 def moving_average_convergence_divergence(stock, close):
     line, hist, signal = ta.MACD(close)
 
-    stock.loc[:, 'macd_line'] = line / close
-    stock.loc[:, 'macd_hist'] = hist / close
-    stock.loc[:, 'macd_signal'] = signal / close
+    stock.loc[:, 'macd_line'] = line
+    stock.loc[:, 'macd_hist'] = hist
+    stock.loc[:, 'macd_signal'] = signal
 
 def money_flow_index(stock, timeperiods, high, low, close, volume):
     technical_indicator_time_periods(stock, 'mfi', ta.MFI, timeperiods, False, high, low, close, volume)
@@ -127,13 +127,10 @@ def relative_strength_index(stock, timeperiods, close):
 
 def stochastic(stock, high, low, close):
     slow_k, slow_d = ta.STOCH(high, low, close)
-    fast_k, fast_d = ta.STOCHF(high, low, close)
     rsi_k, rsi_d = ta.STOCHRSI(close)
 
     stock.loc[:, 'slow_k'] = slow_k
     stock.loc[:, 'slow_d'] = slow_d
-    stock.loc[:, 'fast_k'] = fast_k
-    stock.loc[:, 'fast_d'] = fast_d
     stock.loc[:, 'rsi_k'] = rsi_k
     stock.loc[:, 'rsi_d'] = rsi_d
 
@@ -224,139 +221,60 @@ def variance(stock, timeperiods, close):
     technical_indicator_time_periods(stock, 'var', ta.VAR, timeperiods, True, close)
 
 def predict_today(stock, columns, model, scaler):
-    
-    open_ = stock.loc[:, 'open']
-    high = stock.loc[:, 'high']
-    low = stock.loc[:, 'low']
-    close = stock.loc[:, 'close']
-    volume = stock.loc[:, 'volume']
-    
-    timeperiods = [5, 10, 20, 30, 50, 100]
-    
-    # Overlap Studies
-    
-    bollinger_bands(stock, timeperiods, close)
-    
-    double_exponential_moving_average(stock, timeperiods, close)
-    
-    exponential_moving_average(stock, timeperiods, close)
-    
-    hilbert_transform_trendline(stock, close)
-    
-    kaufman_adaptive_moving_average(stock, timeperiods, close)
-    
-    moving_average(stock, timeperiods, close)
-    
-    mesa_adaptive_moving_average(stock, close)
-    
-    midpoint_over_period(stock, timeperiods, close)
-    
-    midpoint_price_over_period(stock, timeperiods, high, low, close)
-    
-    parabolic_sar(stock, high, low, close)
-    
-    triple_exponential_moving_average_t3(stock, timeperiods, close)
-    
-    triple_exponential_moving_average(stock, timeperiods, close)
-    
-    triangular_moving_average(stock, timeperiods, close)
-    
-    weighted_moving_average(stock, timeperiods, close)
-    
-    # Momentum Indicators
-    
-    average_directional_movement_index(stock, timeperiods, high, low, close)
-    
-    absolute_price_oscillator(stock, close)
-    
-    balance_of_power(stock, open_, high, low, close)
-    
-    commodity_channel_index(stock, timeperiods, high, low, close)
-        
-    chande_momentum_oscillator(stock, timeperiods, close)
-    
-    directional_movement(stock, timeperiods, high, low, close)
-    
-    directional_indicator(stock, timeperiods, high, low, close)
-    
-    moving_average_convergence_divergence(stock, close)
-    
-    money_flow_index(stock, timeperiods, high, low, close, volume)
-    
-    momentum(stock, timeperiods, close)
-    
-    percentage_price_oscillator(stock, close)
-    
-    rate_of_change(stock, timeperiods, close)
-    
-    relative_strength_index(stock, timeperiods, close)
-    
-    stochastic(stock, high, low, close)
-    
-    one_day_rate_of_change_of_a_triple_smooth_ema(stock, timeperiods, close)
-    
-    ultimate_oscillator(stock, high, low, close)
-    
-    williams_percent_r(stock, timeperiods, high, low, close)
-    
-    # Volume Indicators
-    
-    chaikin_ad(stock, high, low, close, volume)
-    
-    on_balance_volume(stock, close, volume)
-    
-    # Volatility Indicators
-    
-    normalized_average_true_range(stock, timeperiods, high, low, close)
-    
-    true_range(stock, high, low, close)
-    
-    # Price Transform
-    
-    average_price(stock, open_, high, low, close)
-    
-    median_price(stock, high, low, close)
-    
-    typical_price(stock, high, low, close)
-    
-    weighted_close_price(stock, high, low, close)
-    
-    # Cycle Indicators
-    
-    dominant_cycle_period(stock, close)
-    
-    dominant_cycle_phase(stock, close)
-    
-    phasor_components(stock, close)
-    
-    sine_wave(stock, close)
-    
-    trend_mode(stock, close)
-    
-    # Pattern Recognition
-    
-    # pattern_recognition(stock, open_, high, low, close)
-    
-    # Statistic Functions
-    
-    beta(stock, timeperiods, high, low)
-    
-    pearsons_correlation_coefficient(stock, timeperiods, high, low)
-    
-    linear_regression(stock, timeperiods, close)
-    
-    standard_deviation(stock, timeperiods, close)
-    
-    time_series_forecast(stock, timeperiods, close)
-    
-    variance(stock, timeperiods, close)
-
-    stock.dropna(inplace=True)
 
     if stock.shape[0] == 0:
         return 0, None
+
+    close = stock.loc[:, 'close']
 
     X = stock[columns]
     X_scaled = scaler.transform(X)
 
     return model.predict(X_scaled)[-1][1], close.iloc[-1]
+
+def compute(stock):
+        
+    high = stock.loc[:, 'high']
+    low = stock.loc[:, 'low']
+    close = stock.loc[:, 'close']
+    volume = stock.loc[:, 'volume']
+    
+    timeperiods = [5, 20]
+    
+    # Overlap Studies
+    
+    bollinger_bands(stock, timeperiods, close)
+        
+    triple_exponential_moving_average(stock, timeperiods, close)
+                        
+    triple_exponential_moving_average_t3(stock, timeperiods, close)
+    
+    # Momentum Indicators
+             
+    moving_average_convergence_divergence(stock, close)
+    
+    momentum(stock, timeperiods, close)
+    
+    relative_strength_index(stock, timeperiods, close)
+        
+    # Volume Indicators
+        
+    on_balance_volume(stock, close, volume)
+    
+    # Volatility Indicators
+        
+    normalized_average_true_range(stock, timeperiods, high, low, close)
+    
+    # Price Transform
+    
+    median_price(stock, high, low, close)
+    
+    weighted_close_price(stock, high, low, close)
+            
+    # Statistic Functions
+            
+    linear_regression(stock, timeperiods, close)
+        
+    time_series_forecast(stock, timeperiods, close)
+        
+    stock.dropna(inplace=True)
