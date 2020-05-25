@@ -28,7 +28,7 @@ def bollinger_bands(stock, timeperiods, close):
         stock.loc[:, column_upper] = upper / close
         stock.loc[:, column_middle] = middle / close
         stock.loc[:, column_lower] = lower / close
-        stock.loc[:, column_width] = (upper - lower) / close
+        stock.loc[:, column_width] = (upper - lower) / middle
         
 def double_exponential_moving_average(stock, timeperiods, close):
     technical_indicator_time_periods(stock, 'dema', ta.DEMA, timeperiods, True, close)
@@ -233,7 +233,8 @@ def predict_today(stock, columns, model, scaler):
     return model.predict(X_scaled)[-1][1], close.iloc[-1]
 
 def compute(stock):
-        
+
+    open_ = stock.loc[:, 'open']    
     high = stock.loc[:, 'high']
     low = stock.loc[:, 'low']
     close = stock.loc[:, 'close']
@@ -249,13 +250,19 @@ def compute(stock):
                         
     triple_exponential_moving_average_t3(stock, timeperiods, close)
     
+    parabolic_sar(stock, high, low, close)
+    
     # Momentum Indicators
+    
+    average_directional_movement_index(stock, timeperiods, high, low, close)
              
     moving_average_convergence_divergence(stock, close)
     
-    momentum(stock, timeperiods, close)
-    
     relative_strength_index(stock, timeperiods, close)
+    
+    balance_of_power(stock, open_, high, low, close)
+    
+    williams_percent_r(stock, timeperiods, high, low, close)
         
     # Volume Indicators
         
@@ -267,14 +274,16 @@ def compute(stock):
     
     # Price Transform
     
-    median_price(stock, high, low, close)
-    
     weighted_close_price(stock, high, low, close)
             
     # Statistic Functions
+    
+    beta(stock, timeperiods, high, low)
+    
+    standard_deviation(stock, timeperiods, close)
             
     linear_regression(stock, timeperiods, close)
         
     time_series_forecast(stock, timeperiods, close)
-        
+
     stock.dropna(inplace=True)
