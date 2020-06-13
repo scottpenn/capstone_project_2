@@ -1,0 +1,11 @@
+Monday, June 8:
+Control - $100,000
+Market - $100,000
+No Market - $100,000
+SPY 322.04
+
+Tuesday, June 9:
+Control - $99,338.11
+Market - $99,985.10
+No Market - $99,476.21
+SPY 321.56

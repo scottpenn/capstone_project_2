@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 import talib as ta
+import ta as ta_ta
 
 def technical_indicator(stock, name, func, normalize, *args, **kwargs):
     if 'normalize_by' not in kwargs:
@@ -220,6 +221,19 @@ def time_series_forecast(stock, timeperiods, close):
 def variance(stock, timeperiods, close):
     technical_indicator_time_periods(stock, 'var', ta.VAR, timeperiods, True, close)
 
+def ichimoku_cloud(stock, high, low, close):
+    a = ta_ta.trend.ichimoku_a(stock.high, stock.low) / stock.close
+    b = ta_ta.trend.ichimoku_b(stock.high, stock.low) / stock.close
+    base = ta_ta.trend.ichimoku_base_line(stock.high, stock.low) / stock.close
+    conversion = ta_ta.trend.ichimoku_conversion_line(stock.high, stock.low) / stock.close
+    cloud = a - b
+    
+    stock.loc[:, 'ichimoku_a'] = a
+    stock.loc[:, 'ichimoku_b'] = b
+    stock.loc[:, 'ichimoku_base'] = base
+    stock.loc[:, 'ichimoku_conversion'] = conversion
+    stock.loc[:, 'ichimoku_cloud'] = cloud
+
 def predict_today(stock, columns, model, scaler):
 
     if stock.shape[0] == 0:
@@ -248,7 +262,7 @@ def compute(stock):
         
     triple_exponential_moving_average(stock, timeperiods, close)
                         
-    triple_exponential_moving_average_t3(stock, timeperiods, close)
+#     triple_exponential_moving_average_t3(stock, timeperiods, close)
     
     parabolic_sar(stock, high, low, close)
     
@@ -260,7 +274,7 @@ def compute(stock):
     
     relative_strength_index(stock, timeperiods, close)
     
-    balance_of_power(stock, open_, high, low, close)
+#     balance_of_power(stock, open_, high, low, close)
     
     williams_percent_r(stock, timeperiods, high, low, close)
         
@@ -280,10 +294,14 @@ def compute(stock):
     
     beta(stock, timeperiods, high, low)
     
-    standard_deviation(stock, timeperiods, close)
+#     standard_deviation(stock, timeperiods, close)
             
     linear_regression(stock, timeperiods, close)
         
     time_series_forecast(stock, timeperiods, close)
+    
+    # Ichimoku Cloud
+    
+    ichimoku_cloud(stock, high, low, close)
 
     stock.dropna(inplace=True)
