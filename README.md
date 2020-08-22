@@ -7,13 +7,14 @@ I had two main goals when starting this project. First, I wanted to better under
 
 ### Notebooks
 
-The data pipeline, contained in the "notebooks folder," goes as follows:
+The data pipeline, contained in the "notebooks" folder, goes as follows:
 
 1. Data Acquisition
-2. Technical Indicators
-3. Deep Learning
-4. Backtesting
-5. Paper Trading
+2. Exploratory Data Analysis (Optional)
+3. Technical Indicators
+4. Deep Learning
+5. Backtesting
+6. Paper Trading
 
 Each Notebook must be run in order, to ensure that the proper files are created.
 
