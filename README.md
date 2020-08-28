@@ -16,7 +16,7 @@ The data pipeline, contained in the "notebooks" folder, goes as follows:
 5. Backtesting
 6. Paper Trading
 
-Each Notebook must be run in order, to ensure that the proper files are created.
+Each Notebook must be run in order, to ensure that the proper files are created. Each step may be modified and ran again as long as the previous steps have been run.
 
 The notes contained in the notebooks are a work in progress, and will be updated.
 
